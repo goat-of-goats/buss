@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Santa Clarita Transit Ticket</title>
+<style>
+  :root{
+    --bg:#ffffff;
+    --muted:#6b7280;
+    --black-pill:#000;
+  }
+
+  html,body{
+    height:100%;
+    margin:0;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background:var(--bg);
+    color:#111827;
+  }
+
+  .wrap{
+    min-height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:28px 16px;
+    box-sizing:border-box;
+  }
+
+  .ticket {
+    width:320px;
+    max-width:92vw;
+    text-align:center;
+    border-radius:14px;
+    padding:20px 18px 26px;
+    background:#fff;
+    box-shadow:0 8px 30px rgba(2,6,23,0.08);
+    border:1px solid rgba(0,0,0,0.04);
+  }
+
+  .operator {
+    font-size:13px;
+    color:#111827;
+    font-weight:600;
+    margin-bottom:6px;
+  }
+  .operator-sub {
+    font-size:11px;
+    color:var(--muted);
+    margin-top:2px;
+  }
+
+  .logo-wrap {
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:10px 0 14px;
+  }
+  .outer-ring{
+    width:92px;
+    height:92px;
+    border-radius:50%;
+    background: radial-gradient(circle at 50% 50%, #dff7f6 40%, #9ee0dd 60%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .outer-ring img{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    object-fit:cover;
+  }
+
+  .time {
+    font-size:42px;
+    font-weight:800;
+    letter-spacing:1px;
+    margin:8px 0 12px;
+  }
+
+  .pill {
+    display:inline-block;
+    background:var(--black-pill);
+    color:#fff;
+    padding:10px 22px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:16px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.18);
+    margin-bottom:14px;
+  }
+
+  .desc {
+    color:var(--muted);
+    font-size:13px;
+    margin-top:8px;
+    margin-bottom:6px;
+  }
+
+  .small {
+    font-size:12px;
+    color:#9ca3af;
+    margin-top:6px;
+  }
+
+  .expiry {
+    margin-top:10px;
+    font-size:12px;
+    color:#6b7280;
+    border-top:1px solid #efefef;
+    padding-top:10px;
+  }
+
+  @media (max-width:360px){
+    .time{ font-size:36px; }
+    .outer-ring{ width:80px; height:80px; }
+    .outer-ring img{ width:44px; height:44px; }
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="ticket" role="region" aria-label="Transit ticket">
+      <div class="operator">Santa Clarita Transit</div>
+      <div class="operator-sub">Show operator your ticket</div>
+
+      <div class="logo-wrap">
+        <div class="outer-ring">
+          <img src="https://files.catbox.moe/i8wen2.gif" alt="Transit logo">
+        </div>
+      </div>
+
+      <div id="time" class="time" aria-live="polite">--:--:-- --</div>
+
+      <div class="pill">Local 1 Ride</div>
+
+      <div class="desc">Full Local Single Ride</div>
+      <div class="small">Santa Clarita, CA</div>
+
+      <div class="expiry" id="expiryText">
+        Expires --:-- --
+      </div>
+    </div>
+  </div>
+
+<script>
+  function pad(n){ return n < 10 ? '0' + n : n; }
+
+  // update live time
+  function updateClock(){
+    const now = new Date();
+    let hrs = now.getHours();
+    const mins = now.getMinutes();
+    const secs = now.getSeconds();
+    const ampm = hrs >= 12 ? 'PM' : 'AM';
+    hrs = hrs % 12 || 12;
+    const timeStr = `${pad(hrs)}:${pad(mins)}:${pad(secs)} ${ampm}`;
+    document.getElementById('time').textContent = timeStr;
+  }
+
+  // set expiry 20 minutes from current time
+  function setExpiry(){
+    const now = new Date();
+    const expiry = new Date(now.getTime() + 20*60*1000);
+    let hrs = expiry.getHours();
+    const mins = expiry.getMinutes();
+    const ampm = hrs >= 12 ? 'PM' : 'AM';
+    hrs = hrs % 12 || 12;
+    const timeStr = `${pad(hrs)}:${pad(mins)} ${ampm}`;
+    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const dateStr = `${monthNames[expiry.getMonth()]} ${expiry.getDate()}, ${expiry.getFullYear()}`;
+    document.getElementById('expiryText').textContent = `Expires ${dateStr} at ${timeStr}`;
+  }
+
+  updateClock();
+  setExpiry();
+  setInterval(updateClock,1000);
+</script>
+</body>
+</html>
